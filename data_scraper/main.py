@@ -71,7 +71,3 @@ def scrape_website(url):
 
     else:
         print("Failed to fetch the webpage.")
-
-# Example usage
-url = 'https://www.lamudi.com.ph/house/buy/'
-scrape_website(url)
