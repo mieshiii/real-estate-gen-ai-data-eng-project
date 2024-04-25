@@ -35,35 +35,35 @@ def scrape_website(url):
         for listing in listings:
             # Extract data attributes
             data = listing.find('div', class_='ListingCell-AllInfo ListingUnit')
-            prices.append(data['data-price'])
-            categories.append(data['data-category'])
-            subcategories.append(eval(data['data-subcategories'])) # Convert string to list
-            #year_builts.append(data['data-year_built'])
-            furnished.append(data['data-furnished'])
-            bedrooms.append(data['data-bedrooms'])
-            bathrooms.append(data['data-bathrooms'])
-            #building_sizes.append(data['data-building_size'])
-            land_sizes.append(data['data-land_size'])
-            #subdivision_names.append(data['data-subdivisionname'])
-            skus.append(data['data-sku'])
-            geo_points.append(eval(data['data-geo-point'])) # Convert string to list
-            #new_developments.append(data['data-listing-new-development'])
+            prices.append(data.get('data-price', 'N/A'))
+            categories.append(data.get('data-category', 'N/A'))
+            subcategories.append(eval(data.get('data-subcategories', '[]'))) # Convert string to list
+            year_builts.append(data.get('data-year_built', 'N/A'))
+            furnished.append(data.get('data-furnished', 'N/A'))
+            bedrooms.append(data.get('data-bedrooms', 'N/A'))
+            bathrooms.append(data.get('data-bathrooms', 'N/A'))
+            building_sizes.append(data.get('data-building_size', 'N/A'))
+            land_sizes.append(data.get('data-land_size', 'N/A'))
+            subdivision_names.append(data.get('data-subdivisionname', 'N/A'))
+            skus.append(data.get('data-sku', 'N/A'))
+            geo_points.append(eval(data.get('data-geo-point', '[N/A, N/A]'))) # Convert string to list
+            new_developments.append(data.get('data-listing-new-development', 'false'))
 
         # Create a DataFrame
         df = pd.DataFrame({
             'Price': prices,
             'Category': categories,
             'Subcategory': subcategories,
-            #'Year Built': year_builts,
+            'Year Built': year_builts,
             'Furnished': furnished,
             'Bedrooms': bedrooms,
             'Bathrooms': bathrooms,
-            #'Building Size': building_sizes,
+            'Building Size': building_sizes,
             'Land Size': land_sizes,
-            #'Subdivision Name': subdivision_names,
+            'Subdivision Name': subdivision_names,
             'SKU': skus,
             'Geo Point': geo_points,
-            #'New Development': new_developments
+            'New Development': new_developments
         })
 
         # Display the DataFrame
