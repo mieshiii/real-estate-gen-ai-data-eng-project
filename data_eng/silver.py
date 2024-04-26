@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-spark = SparkSession.builder.appName("Bronze").getOrCreate()
+spark = SparkSession.builder.appName("Silver").getOrCreate()
 
 #read bronze file 
 df = spark.read.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees')
