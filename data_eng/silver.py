@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import row_number, monotonically_increasing_id, current_date, current_timestamp
+from pyspark.sql.functions import row_number, monotonically_increasing_id, current_date, current_timestamp, col, split, regexp_extract, when, lit
 from pyspark.sql import Window
 
 spark = SparkSession.builder.appName("Silver").getOrCreate()
@@ -14,16 +14,21 @@ df = df.withColumn(
       )
 
 df = df.withColumn(
- "date_ingested", current_date()
+ "date_ingested", lit(current_date())
 )
 df = df.withColumn(
-  "time_of_ingestion", current_timestamp()
+  "time_of_ingestion", lit(current_timestamp())
 )
 
 #df cleaning and dedup
-df_cleaned = df.withColumn("Price", df["Price"].cast("int"))
-df_cleaned = df.withColumn("Building Size", df["Building Size"].cast("int"))
-df_cleaned = df.withColumn("Land Size", df["Land Size"].cast("int"))
+# Split the 'Geo Point' column into latitude and longitude columns
+df_cleaned = df.withColumn("Latitude", split(col("Geo Point"), ",")[0].cast("double"))
+df_cleaned = df_cleaned.withColumn("Longitude", split(col("Geo Point"), ",")[1].cast("double"))
+df_cleaned = df_cleaned.withColumn("Bedrooms", col("Bedrooms").cast("int"))
+df_cleaned = df_cleaned.withColumn("Bathrooms", col("Bathrooms").cast("int"))
+df_cleaned = df_cleaned.withColumn("Price", df["Price"].cast("double"))
+df_cleaned = df_cleaned.withColumn("Building Size", df["Building Size"].cast("double"))
+df_cleaned = df_cleaned.withColumn("Land Size", df["Land Size"].cast("double"))
 
 df_cleaned = df_cleaned \
     .withColumnRenamed("Price", "price") \
