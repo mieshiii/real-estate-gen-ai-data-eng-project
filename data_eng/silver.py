@@ -32,15 +32,13 @@ df_cleaned = df_cleaned \
     .withColumnRenamed("Year Built", "year_built") \
     .withColumnRenamed("Furnished", "furnished") \
     .withColumnRenamed("Bedrooms", "bedrooms") \
+    .withColumnRenamed("Bathrooms", "bathrooms") \
     .withColumnRenamed("Building Size", "building_sizes") \
     .withColumnRenamed("Land Size", "land_sizes") \
     .withColumnRenamed("Subdivision Name", "subdivision_names") \
     .withColumnRenamed("SKU", "sku") \
     .withColumnRenamed("Geo Point", "geo_points") \
-    .withColumnRenamed("New Development", "new_development") \
-    .withColumnRenamed("Price", "price") \
-    .withColumnRenamed("Price", "price")
-
+    .withColumnRenamed("New Development", "new_development")
 
 df_deduped = df_cleaned.dropDuplicates(["SKU"])
 
