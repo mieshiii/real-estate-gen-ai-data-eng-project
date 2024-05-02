@@ -24,3 +24,12 @@ df_final = df_price_metrics
 
 #test silver parquet file and url
 df_final.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees_gold')
+
+df_exploded = df.select(col("category"), explode(col("subcategory")).alias("subcategory"))
+
+df_cat_counts = df.groupBy("category").agg(count(lit(1)).alias("count"))
+
+# Compute the count of each subcategory
+df_subcat_counts = df_exploded.groupBy("cubcategory").agg(count(lit(1)).alias("count"))
+
+df_cat_counts.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees_gold_cat')
