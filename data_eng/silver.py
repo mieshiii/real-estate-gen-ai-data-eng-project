@@ -14,10 +14,7 @@ df = df.withColumn(
       )
 
 df = df.withColumn(
- "date_ingested", lit(current_date())
-)
-df = df.withColumn(
-  "time_of_ingestion", lit(current_timestamp())
+  "time_of_processing", lit(current_timestamp())
 )
 
 #df cleaning and dedup
