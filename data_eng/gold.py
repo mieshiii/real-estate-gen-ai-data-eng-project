@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, avg, lit, explode, count, current_timestamp
+from pyspark.sql.functions import col, avg, lit, explode, count, current_timestamp, radians, acos, cos, sin, lit, toDegrees, expr
 from pyspark.sql import Window
 
 spark = SparkSession.builder.appName("Gold").getOrCreate()
@@ -39,3 +39,23 @@ df_subcat_counts = df_subcat_counts.withColumn("time_of_processing", lit(current
 df_cat_counts.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees_gold_cat')
 
 df_subcat_counts.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees_gold_subcat')
+
+reference_latitude_rad = radians(reference_latitude)
+reference_longitude_rad = radians(reference_longitude)
+
+# Convert latitude and longitude columns to radians
+df = df.withColumn("Latitude_rad", radians(col("Latitude")))
+df = df.withColumn("Longitude_rad", radians(col("Longitude")))
+
+# Compute the distance between each property and the reference location using the Haversine formula
+distance_expr = acos(
+    sin(reference_latitude_rad) * sin(col("Latitude_rad")) +
+    cos(reference_latitude_rad) * cos(col("Latitude_rad")) *
+    cos(col("Longitude_rad") - reference_longitude_rad)
+) * lit(6371)  # Earth radius in kilometers
+
+# Filter properties within 100km radius
+df_filtered = df.filter(distance_expr <= 100)
+
+# Compute the average price of properties within the radius
+average_price_within_radius = df_filtered.agg(avg(col("Price")).alias("AveragePrice"))
