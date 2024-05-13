@@ -39,7 +39,8 @@ df_cleaned = df_cleaned \
     .withColumnRenamed("Land Size", "land_sizes") \
     .withColumnRenamed("Subdivision Name", "subdivision_names") \
     .withColumnRenamed("SKU", "sku") \
-    .withColumnRenamed("Geo Point", "geo_points") \
+    .withColumnRenamed("Latitude", "latitude") \
+    .withColumnRenamed("Longitude", "longitude") \
     .withColumnRenamed("New Development", "new_development")
 
 df_deduped = df_cleaned.dropDuplicates(["SKU"])
