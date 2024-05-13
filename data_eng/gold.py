@@ -40,18 +40,21 @@ df_cat_counts.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.win
 
 df_subcat_counts.write.parquet('abfss://parquet@deltaformatdemostorage.dfs.core.windows.net/employees_gold_subcat')
 
+
+reference_latitude = 123.123 #set reference lat
+reference_longitude = 456.456 #set reference long
 reference_latitude_rad = radians(reference_latitude)
 reference_longitude_rad = radians(reference_longitude)
 
 # Convert latitude and longitude columns to radians
-df = df.withColumn("Latitude_rad", radians(col("Latitude")))
-df = df.withColumn("Longitude_rad", radians(col("Longitude")))
+df = df.withColumn("latitude_rad", radians(col("latitude")))
+df = df.withColumn("longitude_rad", radians(col("longitude")))
 
 # Compute the distance between each property and the reference location using the Haversine formula
 distance_expr = acos(
-    sin(reference_latitude_rad) * sin(col("Latitude_rad")) +
-    cos(reference_latitude_rad) * cos(col("Latitude_rad")) *
-    cos(col("Longitude_rad") - reference_longitude_rad)
+    sin(reference_latitude_rad) * sin(col("latitude_rad")) +
+    cos(reference_latitude_rad) * cos(col("latitude_rad")) *
+    cos(col("longitude_rad") - reference_longitude_rad)
 ) * lit(6371)  # Earth radius in kilometers
 
 # Filter properties within 100km radius
